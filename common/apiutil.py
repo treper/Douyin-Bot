@@ -59,13 +59,25 @@ class AiPlat(object):
         return self.invoke(self.data)
 
     def getUserData(self,image):
-            self.url = url_preffix + 'ocr/ocr_generalocr'
-            setParams(self.data, 'app_id', self.app_id)
-            setParams(self.data, 'app_key', self.app_key)
-            setParams(self.data, 'time_stamp', int(time.time()))
-            setParams(self.data, 'nonce_str', int(time.time()))
-            image_data = base64.b64encode(image)
-            setParams(self.data, 'image', image_data.decode("utf-8"))
-            sign_str = genSignString(self.data)
-            setParams(self.data, 'sign', sign_str)
-            return self.invoke(self.data)
+        self.url = url_preffix + 'ocr/ocr_generalocr'
+        setParams(self.data, 'app_id', self.app_id)
+        setParams(self.data, 'app_key', self.app_key)
+        setParams(self.data, 'time_stamp', int(time.time()))
+        setParams(self.data, 'nonce_str', int(time.time()))
+        image_data = base64.b64encode(image)
+        setParams(self.data, 'image', image_data.decode("utf-8"))
+        sign_str = genSignString(self.data)
+        setParams(self.data, 'sign', sign_str)
+        return self.invoke(self.data)
+
+    def getVideoData(self,image):
+        self.url = url_preffix + 'ocr/ocr_generalocr'
+        setParams(self.data, 'app_id', self.app_id)
+        setParams(self.data, 'app_key', self.app_key)
+        setParams(self.data, 'time_stamp', int(time.time()))
+        setParams(self.data, 'nonce_str', int(time.time()))
+        image_data = base64.b64encode(image)
+        setParams(self.data, 'image', image_data.decode("utf-8"))
+        sign_str = genSignString(self.data)
+        setParams(self.data, 'sign', sign_str)
+        return self.invoke(self.data)

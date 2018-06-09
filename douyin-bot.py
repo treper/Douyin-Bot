@@ -143,6 +143,43 @@ def AddDouYinAccount(accountNum):
     with open(file, 'a+') as f:
         f.write(accountNum + '\n')  # 加\n换行显示
 
+def getVideoData():
+    """
+    获取抖音视频数据
+    :return:
+    """
+    screenshot.getVideoDataImage()
+    #参数 左上右下
+    cut_image('video_data.png', 'vdata.png', 960,960,1060,1460)
+
+    with open('vdata.png', 'rb') as bin_data:
+        user_image = bin_data.read()
+
+    ai_tools = apiutil.AiPlat(AppID, AppKey)
+    video_data = ai_tools.getVideoData(user_image)
+    v_data = video_data['data']['item_list']
+    if(len(v_data)==3):
+        favorite_cnt = v_data[0]['itemstring']
+        reply_cnt = v_data[1]['itemstring']
+        forward_cnt = v_data[2]['itemstring']
+        print("fav:{0},rep:{1},forward:{2}".format(favorite_cnt,reply_cnt,forward_cnt))
+
+def hot_videos():
+    """
+    main
+    :return:
+    """
+    print('程序版本号：{}'.format(VERSION))
+    print('激活窗口并按 CONTROL + C 组合键退出')
+    debug.dump_device_info()
+    screenshot.check_screenshot()
+
+    while True:
+        next_page()
+
+        time.sleep(3)
+        getVideoData()
+
 def main():
     """
     main
@@ -206,7 +243,8 @@ def main():
 if __name__ == '__main__':
     try:
         # yes_or_no()
-        main()
+        #main()
+        hot_videos()
     except KeyboardInterrupt:
         adb.run('kill-server')
         print('谢谢使用')
