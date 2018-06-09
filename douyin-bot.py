@@ -140,6 +140,8 @@ def main():
             for face in rsp['data']['face_list']:
                 print(face)
                 face_area = (face['x'], face['y'], face['x']+face['width'], face['y']+face['height'])
+                if face['width']*face['height']<5000:
+                    continue
                 print(face_area)
                 img = Image.open("optimized.png")
                 cropped_img = img.crop(face_area).convert('RGB')
