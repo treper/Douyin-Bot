@@ -12,7 +12,7 @@ try:
     from common import debug, config, screenshot, UnicodeStreamFilter
     from common.auto_adb import auto_adb
     from common import apiutil
-    from common.compression import resize_image
+    from common.compression import resize_image,cut_image
 except Exception as ex:
     print(ex)
     print('请将脚本放在项目根目录中运行')
@@ -28,6 +28,7 @@ AppKey = 'bNUNgOpY6AeeJjFu'
 
 DEBUG_SWITCH = True
 FACE_PATH = 'face/'
+RESULT_FILE_PATH="result/account.txt"
 
 adb = auto_adb()
 adb.test_device()
@@ -107,6 +108,40 @@ def thumbs_up():
     adb.run(cmd)
     time.sleep(0.5)
 
+def back():
+    cmd="shell input keyevent 4 "
+    adb.run(cmd)
+
+
+def getUserProfile():
+    """
+    获取抖音账号
+    :return:
+    """
+    cmd = 'shell input tap {x} {y}'.format(
+        x=config['user_bottom']['x'] + _random_bias(10),
+        y=config['user_bottom']['y'] + _random_bias(10)
+    )
+    adb.run(cmd)
+    time.sleep(0.5)
+    screenshot.getUserImage()
+    #参数 左上右下
+    cut_image('user_profile.png', 'user.png', 0,510,700,570)
+
+    with open('user.png', 'rb') as bin_data:
+        user_image = bin_data.read()
+
+    ai_tools = apiutil.AiPlat(AppID, AppKey)
+    user_data = ai_tools.getUserData(user_image)
+    for textData in user_data['data']['item_list']:
+        if "抖音号" in textData['itemstring']:
+            AddDouYinAccount(textData['itemstring'])
+
+
+def AddDouYinAccount(accountNum):
+    file = RESULT_FILE_PATH
+    with open(file, 'a+') as f:
+        f.write(accountNum + '\n')  # 加\n换行显示
 
 def main():
     """
@@ -158,8 +193,10 @@ def main():
             # 是个美人儿~关注点赞走一波
             if beauty > BEAUTY_THRESHOLD and major_total > minor_total:
                 print('发现漂亮妹子！！！')
-                thumbs_up()
-                follow_user()
+                #thumbs_up()
+                #follow_user()
+                getUserProfile()
+                back()
 
         else:
             print(rsp)

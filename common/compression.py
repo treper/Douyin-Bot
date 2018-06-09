@@ -29,3 +29,8 @@ def resize_image(origin_img, optimize_img, threshold):
             im.save(optimize_img)
 
 
+def cut_image(origin_img, target_img,startx,starty,width,height):
+    region=(startx,starty,width,height)
+    with Image.open(origin_img) as im:
+        cutImage = im.crop(region)
+        cutImage.save(target_img)
